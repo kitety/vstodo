@@ -11,6 +11,7 @@
 	],
 	"activationEvents": [
 		"onCommand:vstodo.helloWorld",
+		"onCommand:vstodo.refresh",
 		"onCommand:vstodo.askQuestion"
 	],
 	"main": "./dist/extension.js",
@@ -24,6 +25,11 @@
 				"command": "vstodo.askQuestion",
 				"category": "vstodo",
 				"title": "Ask question"
+			},
+			{
+				"command": "vstodo.refresh",
+				"category": "vstodo",
+				"title": "Refresh"
 			}
 		]
 	},

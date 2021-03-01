@@ -9,7 +9,19 @@ export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "vstodo" is now active!');
   context.subscriptions.push(
     vscode.commands.registerCommand("vstodo.helloWorld", () => {
-      HelloWorldPanel.createOrShow(context.extensionUri)
+      HelloWorldPanel.createOrShow(context.extensionUri);
+    })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("vstodo.refresh", () => {
+      HelloWorldPanel.kill();
+      HelloWorldPanel.createOrShow(context.extensionUri);
+      setTimeout(() => {
+        // 需要放在回调里面
+        vscode.commands.executeCommand(
+          "workbench.action.webview.openDeveloperTools"
+        );
+      }, 500);
     })
   );
 
