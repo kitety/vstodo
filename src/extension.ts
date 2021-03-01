@@ -2,11 +2,17 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { HelloWorldPanel } from "./HelloWorldPanel";
+import { SidebarProvider } from "./SiderProvider";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "vstodo" is now active!');
+  const sidebarProvider = new SidebarProvider(context.extensionUri);
+  // 打开侧边栏
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider("vstodo-sidebar", sidebarProvider)
+  );
+  // 注册命令
   context.subscriptions.push(
     vscode.commands.registerCommand("vstodo.helloWorld", () => {
       HelloWorldPanel.createOrShow(context.extensionUri);
