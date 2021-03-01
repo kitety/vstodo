@@ -1,17 +1,31 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  console.log('Congratulations, your extension "vstodo" is now active!');
+  context.subscriptions.push(
+    vscode.commands.registerCommand("vstodo.helloWorld", () => {
+      vscode.window.showInformationMessage("111 World from VSTodo!");
+    })
+  );
 
-	console.log('Congratulations, your extension "vstodo" is now active!');
-	let disposable = vscode.commands.registerCommand('vstodo.helloWorld', () => {
-		vscode.window.showInformationMessage('21321321Hello World from VSTodo!');
-	});
-
-	context.subscriptions.push(disposable);
+  context.subscriptions.push(
+    vscode.commands.registerCommand("vstodo.askQuestion", async () => {
+      const answer = await vscode.window.showInformationMessage(
+        "How was your day?",
+        "good",
+        "bad"
+      );
+      if (answer === "bad") {
+        vscode.window.showInformationMessage("I am sorry to hear that");
+      } else {
+        console.log("answer: ", answer);
+      }
+    })
+  );
 }
 
 // this method is called when your extension is deactivated
