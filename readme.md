@@ -1,0 +1,2 @@
+- gen-env-types 生成env interface
+- npx tsconfig.json生成ts配置文件

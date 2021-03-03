@@ -64,7 +64,7 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@^4.17.11":
+"@types/express@*", "@types/express@^4.17.11":
   version "4.17.11"
   resolved "http://npm-registry.qunhequnhe.com/@types/express/download/@types/express-4.17.11.tgz#debe3caa6f8e5fcda96b47bd54e2f40c4ee59545"
   integrity sha1-3r48qm+OX82pa0e9VOL0DE7llUU=
@@ -88,6 +88,30 @@
   version "2.4.0"
   resolved "http://npm-registry.qunhequnhe.com/@types/normalize-package-data/download/@types/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha1-5IbQ2XOW15vu3QpuM/RTT/a0lz4=
+
+"@types/passport-github@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.npmjs.org/@types/passport-github/-/passport-github-1.1.5.tgz#57ea20d1de0789b98a7157603d76d87c271de6b2"
+  integrity sha512-BeWDdLRWfPpJcmT1XofY5r1Av//TcxBEgllY4LnArcYdGqbIIVLyHwR+8bIG+ZC4PwJ6W1trnVEG3EQ+5J+Jmw==
+  dependencies:
+    "@types/express" "*"
+    "@types/passport" "*"
+    "@types/passport-oauth2" "*"
+
+"@types/passport-oauth2@*":
+  version "1.4.2"
+  resolved "http://npm-registry.qunhequnhe.com/@types/passport-oauth2/download/@types/passport-oauth2-1.4.2.tgz#4bb5153f42336f07a422cb217b8723b918b28c55"
+  integrity sha1-S7UVP0IzbwekIsshe4cjuRiyjFU=
+  dependencies:
+    "@types/express" "*"
+    "@types/passport" "*"
+
+"@types/passport@*", "@types/passport@^1.0.6":
+  version "1.0.6"
+  resolved "http://npm-registry.qunhequnhe.com/@types/passport/download/@types/passport-1.0.6.tgz#72343e49d65efa98cb328163cff5f127981947d7"
+  integrity sha1-cjQ+SdZe+pjLMoFjz/XxJ5gZR9c=
+  dependencies:
+    "@types/express" "*"
 
 "@types/qs@*":
   version "6.9.5"
@@ -523,6 +547,13 @@ dot-prop@^5.2.0:
   integrity sha1-kMzOcIzZzYLMTcjD3dmr3VWyDog=
   dependencies:
     is-obj "^2.0.0"
+
+dotenv-safe@^8.2.0:
+  version "8.2.0"
+  resolved "http://npm-registry.qunhequnhe.com/dotenv-safe/download/dotenv-safe-8.2.0.tgz#8d548c7318a62c09a66c4dc8c31864cc007c78ba"
+  integrity sha1-jVSMcximLAmmbE3IwxhkzAB8eLo=
+  dependencies:
+    dotenv "^8.2.0"
 
 dotenv@^8.2.0:
   version "8.2.0"
