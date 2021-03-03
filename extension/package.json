@@ -14,7 +14,8 @@
 		"onCommand:vstodo.helloWorld",
 		"onCommand:vstodo.refresh",
 		"onCommand:vstodo.addTodo",
-		"onCommand:vstodo.askQuestion"
+		"onCommand:vstodo.askQuestion",
+		"onCommand:vstodo.authenticate"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -57,6 +58,11 @@
 				"command": "vstodo.addTodo",
 				"category": "vstodo",
 				"title": "Add Todo From Selection"
+			},
+			{
+				"command": "vstodo.authenticate",
+				"category": "vstodo",
+				"title": "Authenticate"
 			}
 		]
 	},
