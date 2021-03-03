@@ -1,22 +1,40 @@
 <script lang="ts">
-  import HelloWorld from "./HelloWorld.svelte";
+  import { onMount } from "svelte";
+  import type { IMessageType } from "../globals";
 
   let todos: { text: string; completed: boolean }[] = [];
+  const addTodo = (value: string) => {
+    todos = [
+      {
+        text: value,
+        completed: false,
+      },
+      ...todos,
+    ];
+  };
   let count = 0;
   let text = "";
+  onMount(() => {
+    console.log(11);
+    window.addEventListener("message", (event: MessageEvent<IMessageType>) => {
+      const { type, value } = event.data;
+      switch (type) {
+        case "new-todo":
+          addTodo(value);
+          break;
+
+        default:
+          break;
+      }
+    });
+  });
 </script>
 
 <div>Hello</div>
 <form
   on:submit|preventDefault={() => {
     if (!text) return;
-    todos = [
-      {
-        text,
-        completed: false,
-      },
-      ...todos,
-    ];
+    addTodo(text);
 
     text = "";
   }}
@@ -36,6 +54,23 @@
     </li>
   {/each}
 </ul>
+
+<button
+  on:click={() => {
+    window.tsvscode.postMessage({
+      type: "onInfo",
+      value: "info messages",
+    });
+  }}>Info Click Me</button
+>
+<button
+  on:click={() => {
+    window.tsvscode.postMessage({
+      type: "onError",
+      value: "error messages",
+    });
+  }}>Error Click Me</button
+>
 <!-- <pre>{JSON.stringify(todos,null,2)}</pre> -->
 
 <!-- <input type="text" bind:value={text} />
@@ -56,7 +91,7 @@
   div {
     color: red;
   }
-  li{
+  li {
     cursor: pointer;
   }
   li.completed {
