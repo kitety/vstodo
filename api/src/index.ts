@@ -8,6 +8,7 @@ import { __prod__ } from "./constants";
 import { join } from "path";
 import { User } from "./entities/User";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
 const main = async () => {
   await createConnection({
@@ -21,13 +22,13 @@ const main = async () => {
   });
 
   const data = await User.find({ name: "kitety" });
-  console.log("data: ", data);
 
   const app = express();
 
   passport.serializeUser((user: any, done) => {
     done(null, user.accessToken);
   });
+  app.use(cors({ origin: "*" })); //cors
   app.use(passport.initialize());
   passport.use(
     new GitHubStrategy(
@@ -37,7 +38,6 @@ const main = async () => {
         callbackURL: "http://localhost:3002/auth/github/callback",
       },
       async (_, __, profile, cb) => {
-        console.log("profile: ", profile);
         const { id, displayName } = profile;
         let user = await User.findOne({ githubId: id });
         if (user) {
@@ -46,7 +46,7 @@ const main = async () => {
         } else {
           user = await User.create({ name: displayName, githubId: id }).save();
         }
-        console.log("user: ", user);
+
         var accessToken = jwt.sign({ userId: id }, process.env.JWT_KEY, {
           expiresIn: "1y",
         });
@@ -64,12 +64,36 @@ const main = async () => {
       res.redirect(`http://localhost:54321/auth/${req.user.accessToken}`);
     }
   );
-  app.get("/", (req, res) => {
+  app.get("/me", async (req, res) => {
+    // Bearer xxxx
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.send({ user: null });
+    }
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.send({ user: null });
+    }
+
+    // 解密token
+    let userId = "";
+    try {
+      const payload: any = await jwt.verify(token, process.env.JWT_KEY);
+      userId = payload.userId;
+    } catch (error) {
+      return res.send({ user: null });
+    }
+    if (!userId) {
+      return res.send({ user: null });
+    }
+    const user = await User.findOne({ githubId: userId });
+
+    return res.send({ user });
+  });
+  app.get("/", (_req, res) => {
     res.send("hello");
   });
 
-  app.listen(3002, () => {
-    console.log("The server is listening on port 3002!!");
-  });
+  app.listen(3002, () => {});
 };
 main();

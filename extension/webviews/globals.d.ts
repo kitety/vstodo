@@ -4,11 +4,11 @@ export interface IMessageType {
   value: any;
 }
 declare global {
-  interface tsvscode {
-    postMessage: (IMessageType) => void;
-  }
+
   interface Window {
-    tsvscode: {
+    token: string;
+    apiBaseUrl: string;
+    vscode: {
       postMessage: (IMessageType) => void;
     };
   }

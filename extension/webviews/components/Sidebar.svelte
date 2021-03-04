@@ -14,8 +14,9 @@
   };
   let count = 0;
   let text = "";
-  onMount(() => {
-    console.log(11);
+  let loading = true;
+  let user: { name: string } | null = null;
+  onMount(async () => {
     window.addEventListener("message", (event: MessageEvent<IMessageType>) => {
       const { type, value } = event.data;
       switch (type) {
@@ -27,10 +28,26 @@
           break;
       }
     });
+    const res = await fetch(`${window.apiBaseUrl}/me`, {
+      headers: {
+        authorization: `Bearer ${window.token}`,
+      },
+    });
+    const data = await res.json();
+    user = data.user;
+    console.log("user: ", user);
+    loading = false;
   });
 </script>
 
 <div>Hello</div>
+{#if loading}
+  <div>loading...</div>
+{:else if user}
+  <pre>{JSON.stringify(user,null,2)}</pre>
+{:else}
+  <div>no user is logined</div>
+{/if}
 <form
   on:submit|preventDefault={() => {
     if (!text) return;
@@ -57,7 +74,7 @@
 
 <button
   on:click={() => {
-    window.tsvscode.postMessage({
+    window.vscode.postMessage({
       type: "onInfo",
       value: "info messages",
     });
@@ -65,7 +82,7 @@
 >
 <button
   on:click={() => {
-    window.tsvscode.postMessage({
+    window.vscode.postMessage({
       type: "onError",
       value: "error messages",
     });
