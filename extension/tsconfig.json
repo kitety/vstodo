@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
 		"target": "es6",
 		"outDir": "out",
 		"lib": [
@@ -8,6 +7,9 @@
 		],
 		"sourceMap": true,
 		"rootDir": "src",
+		"allowSyntheticDefaultImports": true,
+		"module": "ESNext",
+		"moduleResolution": "node",
 		"strict": true /* enable all strict type-checking options */
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */

@@ -61,7 +61,6 @@ const main = async () => {
     "/auth/github/callback",
     passport.authenticate("github", { session: false }),
     (req: any, res) => {
-      res.send(req.user.accessToken);
       res.redirect(`http://localhost:54321/auth/${req.user.accessToken}`);
     }
   );

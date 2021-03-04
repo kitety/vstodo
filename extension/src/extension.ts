@@ -4,10 +4,14 @@ import * as vscode from "vscode";
 import { authenticate } from "./authenticate";
 import { HelloWorldPanel } from "./HelloWorldPanel";
 import { SidebarProvider } from "./SiderProvider";
+import { TokenManager } from "./tokenManager";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+  // token manager
+  TokenManager.globalState = context.globalState;
+  console.log("token", await TokenManager.getToken());
   const sidebarProvider = new SidebarProvider(context.extensionUri);
   // 添加底部按鈕
   const bottomFooter = vscode.window.createStatusBarItem(
@@ -29,7 +33,11 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(
     vscode.commands.registerCommand("vstodo.authenticate", () => {
-      authenticate();
+      try {
+        authenticate();
+      } catch (error) {
+        console.log("error: ", error);
+      }
     })
   );
   context.subscriptions.push(
