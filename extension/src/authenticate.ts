@@ -3,7 +3,7 @@ import { apiBaseUrl } from "./constants";
 import * as polka from "polka";
 import { TokenManager } from "./tokenManager";
 
-export const authenticate = () => {
+export const authenticate = (cb?: Function) => {
   const app = polka();
   app.get("/auth/:token", async (req, res) => {
     const { token } = req.params;
@@ -15,6 +15,7 @@ export const authenticate = () => {
     res.end(`auth was successful,you can close this page now`);
     app.server?.close(() => {
       console.log(`> The server is closing on localhost:3000`);
+      cb?.();
     });
   });
   app.listen(54321, (err: Error) => {

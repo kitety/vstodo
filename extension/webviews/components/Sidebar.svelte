@@ -1,30 +1,30 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { IMessageType } from "../globals";
+  import type { User } from "../types";
+  import Todos from "./Todos.svelte";
 
-  let todos: { text: string; completed: boolean }[] = [];
-  const addTodo = (value: string) => {
-    todos = [
-      {
-        text: value,
-        completed: false,
-      },
-      ...todos,
-    ];
-  };
-  let count = 0;
-  let text = "";
   let loading = true;
-  let user: { name: string } | null = null;
+  let user: User | null = null;
+  const loginWithGithub = () => {
+    window.vscode.postMessage({
+      type: "authoricate",
+      value: undefined,
+    });
+  };
+  const logout = () => {
+    user = null;
+    window.vscode.postMessage({
+      type: "logout",
+      value: undefined,
+    });
+  };
   onMount(async () => {
     window.addEventListener(
       "message",
       async (event: MessageEvent<IMessageType>) => {
         const { type, value } = event.data;
         switch (type) {
-          case "new-todo":
-            addTodo(value);
-            break;
           case "token":
             const res = await fetch(`${window.apiBaseUrl}/me`, {
               headers: {
@@ -49,78 +49,13 @@
   });
 </script>
 
-<div>Hello</div>
 {#if loading}
   <div>loading...</div>
 {:else if user}
   <pre>{JSON.stringify(user,null,2)}</pre>
+  <Todos {user} />
+
+  <button on:click={logout}>Logout</button>
 {:else}
-  <div>no user is logined</div>
+  <button on:click={loginWithGithub}>Login with github</button>
 {/if}
-<form
-  on:submit|preventDefault={() => {
-    if (!text) return;
-    addTodo(text);
-
-    text = "";
-  }}
->
-  <input type="text" bind:value={text} />
-</form>
-
-<ul>
-  {#each todos as todo (todo.text)}
-    <li
-      class:completed={todo.completed}
-      on:click={() => {
-        todo.completed = !todo.completed;
-      }}
-    >
-      {todo.text}
-    </li>
-  {/each}
-</ul>
-
-<button
-  on:click={() => {
-    window.vscode.postMessage({
-      type: "onInfo",
-      value: "info messages",
-    });
-  }}>Info Click Me</button
->
-<button
-  on:click={() => {
-    window.vscode.postMessage({
-      type: "onError",
-      value: "error messages",
-    });
-  }}>Error Click Me</button
->
-<!-- <pre>{JSON.stringify(todos,null,2)}</pre> -->
-
-<!-- <input type="text" bind:value={text} />
-<button
-  on:click={() => {
-    count++;
-    console.log("count: ", count);
-  }}>increment {count}</button
->
-<b>{text}</b>
-<button
-  on:click={() => {
-    text = "";
-  }}
-  >reset text
-</button> -->
-<style>
-  div {
-    color: red;
-  }
-  li {
-    cursor: pointer;
-  }
-  li.completed {
-    text-decoration: line-through;
-  }
-</style>

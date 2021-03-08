@@ -22,6 +22,7 @@ const main = async () => {
   });
 
   const data = await User.find({ name: "kitety" });
+  console.log("data: ", data);
 
   const app = express();
 
@@ -56,14 +57,19 @@ const main = async () => {
   );
 
   app.get("/auth/github", passport.authenticate("github", { session: false }));
+  try {
 
-  app.get(
-    "/auth/github/callback",
-    passport.authenticate("github", { session: false }),
-    (req: any, res) => {
-      res.redirect(`http://localhost:54321/auth/${req.user.accessToken}`);
-    }
-  );
+    app.get(
+      "/auth/github/callback",
+      passport.authenticate("github", { session: false }),
+      (req: any, res) => {
+        res.redirect(`http://localhost:54321/auth/${req.user.accessToken}`);
+      }
+    );
+  } catch (error) {
+
+  }
+
   app.get("/me", async (req, res) => {
     // Bearer xxxx
     const authHeader = req.headers.authorization;
