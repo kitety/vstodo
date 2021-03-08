@@ -17,26 +17,35 @@
   let loading = true;
   let user: { name: string } | null = null;
   onMount(async () => {
-    window.addEventListener("message", (event: MessageEvent<IMessageType>) => {
-      const { type, value } = event.data;
-      switch (type) {
-        case "new-todo":
-          addTodo(value);
-          break;
+    window.addEventListener(
+      "message",
+      async (event: MessageEvent<IMessageType>) => {
+        const { type, value } = event.data;
+        switch (type) {
+          case "new-todo":
+            addTodo(value);
+            break;
+          case "token":
+            const res = await fetch(`${window.apiBaseUrl}/me`, {
+              headers: {
+                authorization: `Bearer ${value}`,
+              },
+            });
+            const data = await res.json();
+            user = data.user;
+            console.log("user: ", user);
+            loading = false;
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+    );
+    window.vscode.postMessage({
+      type: "get-token",
+      value: undefined,
     });
-    const res = await fetch(`${window.apiBaseUrl}/me`, {
-      headers: {
-        authorization: `Bearer ${window.token}`,
-      },
-    });
-    const data = await res.json();
-    user = data.user;
-    console.log("user: ", user);
-    loading = false;
   });
 </script>
 
