@@ -4,16 +4,15 @@
   import type { User } from "../types";
 
   export let user: User = {} as User;
+  export let accessToken: string;
+  interface ITodo {
+    text: string;
+    completed: boolean;
+  }
 
-  let todos: { text: string; completed: boolean }[] = [];
-  const addTodo = (value: string) => {
-    todos = [
-      {
-        text: value,
-        completed: false,
-      },
-      ...todos,
-    ];
+  let todos: ITodo[] = [];
+  const addTodo = (todo: ITodo) => {
+    todos = [todo, ...todos];
   };
   let text = "";
   onMount(async () => {
@@ -37,9 +36,18 @@
 <div>Hello {user.name}</div>
 
 <form
-  on:submit|preventDefault={() => {
+  on:submit|preventDefault={async () => {
     if (!text) return;
-    addTodo(text);
+    const res = await fetch(`${window.apiBaseUrl}/todo`, {
+      method: "POST",
+      body: JSON.stringify({ text }),
+      headers: {
+        'content-type':'application/json',
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const { todo } = await res.json();
+    addTodo(todo);
 
     text = "";
   }}

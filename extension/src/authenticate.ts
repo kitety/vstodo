@@ -23,7 +23,7 @@ export const authenticate = (cb?: Function) => {
       vscode.window.showErrorMessage(err.message);
       return;
     }
-    console.log(`> Running on localhost:3000`);
+    console.log(`> Running on localhost:54321`);
     vscode.commands.executeCommand(
       "vscode.open",
       vscode.Uri.parse(`${apiBaseUrl}/auth/github`)

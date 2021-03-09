@@ -6,6 +6,7 @@
 
   let loading = true;
   let user: User | null = null;
+  let accessToken: string;
   const loginWithGithub = () => {
     window.vscode.postMessage({
       type: "authoricate",
@@ -26,6 +27,7 @@
         const { type, value } = event.data;
         switch (type) {
           case "token":
+            accessToken = value;
             const res = await fetch(`${window.apiBaseUrl}/me`, {
               headers: {
                 authorization: `Bearer ${value}`,
@@ -53,9 +55,10 @@
   <div>loading...</div>
 {:else if user}
   <pre>{JSON.stringify(user,null,2)}</pre>
-  <Todos {user} />
+  <Todos {user} {accessToken} />
 
   <button on:click={logout}>Logout</button>
 {:else}
   <button on:click={loginWithGithub}>Login with github</button>
 {/if}
+<button on:click={logout}>Logout</button>

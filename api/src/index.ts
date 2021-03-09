@@ -3,15 +3,18 @@ require("dotenv-safe").config();
 import express from "express";
 import { createConnection } from "typeorm";
 import passport from "passport";
-import { Strategy as GitHubStrategy } from "passport-github";
+var GitHubStrategy = require("passport-github").Strategy;
 import { __prod__ } from "./constants";
 import { join } from "path";
 import { User } from "./entities/User";
 import jwt from "jsonwebtoken";
 import cors from "cors";
+import { Todo } from "./entities/Todo";
+import { isAuth } from "./isAuth";
 
 const main = async () => {
   await createConnection({
+    dropSchema: true,
     type: "postgres",
     logging: !__prod__,
     synchronize: !__prod__, // 自动创建数据库
@@ -21,16 +24,19 @@ const main = async () => {
     entities: [join(__dirname, "./entities/*.*")],
   });
 
-  const data = await User.find({ name: "kitety" });
-  console.log("data: ", data);
+  // const data = await User.find({ name: "kitety" });
+  // console.log("data: ", data);
 
   const app = express();
 
   passport.serializeUser((user: any, done) => {
     done(null, user.accessToken);
   });
+  // middle ware
   app.use(cors({ origin: "*" })); //cors
   app.use(passport.initialize());
+  app.use(express.json());
+
   passport.use(
     new GitHubStrategy(
       {
@@ -55,10 +61,15 @@ const main = async () => {
       }
     )
   );
-
-  app.get("/auth/github", passport.authenticate("github", { session: false }));
   try {
-
+    app.get(
+      "/auth/github",
+      passport.authenticate("github", { session: false })
+    );
+  } catch (error) {
+    console.log("error: ", 222);
+  }
+  try {
     app.get(
       "/auth/github/callback",
       passport.authenticate("github", { session: false }),
@@ -67,8 +78,20 @@ const main = async () => {
       }
     );
   } catch (error) {
-
+    console.log("error: ", 11111);
   }
+
+  // Todos
+  app.post("/todo", isAuth, async (req: any, res) => {
+    console.log("req: ", req.body);
+    console.log("req.userId: ", req.userId);
+    // text
+    const todo = await Todo.create({
+      text: req.body.text,
+      creatorId: req.userId,
+    }).save();
+    res.send({ todo });
+  });
 
   app.get("/me", async (req, res) => {
     // Bearer xxxx
